@@ -1,34 +1,31 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
+import React, { useEffect, useCallback, useMemo } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setProducts } from "../redux/actions/productActions";
+import ProductComponent from "./ProductComponent";
 
-import ProductComponent from './ProductComponent';
-import { setProducts } from '../redux/actions/productActions';
-
-const ProductListing = () => {
-  const products = useSelector((state) => state);
+const ProductPage = () => {
+  const products = useSelector((state) => state.allProducts.products);
   const dispatch = useDispatch();
+  const fetchProducts = useCallback(async () => {
+    const response = await axios
+      .get("https://fakestoreapi.com/products")
+      .catch((err) => {
+        console.log("Err: ", err);
+      });
+    dispatch(setProducts(response.data));
+  },[dispatch]);
 
   useEffect(() => {
-    const getProducts = async () => {
-      try {
-        const response = await axios.get('https://fakestoreapi.com/products');
-        dispatch(setProducts(response.data));
-      } catch (error) {
-        console.log('Err', error);
-      }
-    };
+    fetchProducts();
+  }, [fetchProducts]);
 
-    getProducts();
-  }, [dispatch]);
-
-  console.log("Products: ", products);
-
+  console.log("Products :", products);
   return (
-    <div className='ui grid container'>
+    <div className="ui grid container">
       <ProductComponent />
     </div>
   );
 };
 
-export default ProductListing;
+export default ProductPage;
