@@ -1,13 +1,12 @@
-import axios from "axios";
+import fakeStoreApi from '../../apis/fakeStoreApi';
 import { ActionTypes } from "../constants/action-types";
 
-// this isn't a plain object. Use thunk
-export const fetchProducts = async () => {
-  const response = await axios.get("/products");
-  console.log(response);
-  return {
-    type: ActionTypes.SET_PRODUCTS,
-    payload: response,
+
+export const fetchProducts = () => {
+  return async function(dispatch, getState) {
+    const response = await fakeStoreApi.get("/products"); 
+
+    dispatch({type:ActionTypes.FETCH_PRODUCTS, payload: response.data})
   }
 }
 
