@@ -1,9 +1,13 @@
+import axios from "axios";
 import { ActionTypes } from "../constants/action-types";
 
-export const setProducts = (products) => {
+// this isn't a plain object. Use thunk
+export const fetchProducts = async () => {
+  const response = await axios.get("/products");
+  console.log(response);
   return {
     type: ActionTypes.SET_PRODUCTS,
-    payload: products,
+    payload: response,
   }
 }
 
